@@ -15,7 +15,7 @@ alias k=kubectl
 alias suc="sort | uniq -c | sort -n"
 
 kcn() {
-  if [[ "$1" -eq "" ]]; then
+  if [[ -z "$1" ]]; then
     kubectl get namespace --no-headers -o custom-columns=NAME:.metadata.name
   else
     kubectl config set-context --current --namespace=$1
@@ -26,7 +26,7 @@ _kcn() {
   _values -s ' ' "namespaces" $( kubectl get namespace --no-headers -o custom-columns=NAME:.metadata.name )
 }
 kcc() {
-  if [[ "$1" -eq "" ]]; then
+  if [[ -z "$1" ]]; then
     kubectl config get-contexts -o name
   else
     kubectl config use-context $1
