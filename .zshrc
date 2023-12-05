@@ -15,7 +15,26 @@ alias k=kubectl
 alias suc="sort | uniq -c | sort -n"
 
 kcn() {
-  kubectl config set-context --current --namespace=$1
+  if [[ "$1" -eq "" ]]; then
+    kubectl get namespace --no-headers -o custom-columns=NAME:.metadata.name
+  else
+    kubectl config set-context --current --namespace=$1
+  fi
+}
+compdef _kcn kcn
+_kcn() {
+  _values -s ' ' "namespaces" $( kubectl get namespace --no-headers -o custom-columns=NAME:.metadata.name )
+}
+kcc() {
+  if [[ "$1" -eq "" ]]; then
+    kubectl config get-contexts -o name
+  else
+    kubectl config use-context $1
+  fi
+}
+compdef _kcc kcc
+_kcc() {
+  _values -s ' ' "contexts" $( kubectl config get-contexts -o name )
 }
 
 KUBE_HOME="$HOME/.kube"
@@ -51,8 +70,6 @@ function get_advent_input() {
         echo "Year: ${year}. Day: ${day}." >&2
     fi
 } 
-#compdef kubectl
-compdef _kubectl kubectl
 
 # Copyright 2016 The Kubernetes Authors.
 #
