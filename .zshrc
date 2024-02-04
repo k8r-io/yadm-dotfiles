@@ -14,6 +14,9 @@ source $ZSH/oh-my-zsh.sh
 alias k=kubectl
 alias suc="sort | uniq -c | sort -n"
 
+alias kln="kubectl config get-contexts $(kubectl config current-context) --no-headers  | awk '{print \$5}'"
+alias klc="kubectl config current-context"
+
 kcn() {
   if [[ -z "$1" ]]; then
     kubectl get namespace --no-headers -o custom-columns=NAME:.metadata.name
@@ -37,8 +40,8 @@ _kcc() {
   _values -s ' ' "contexts" $( kubectl config get-contexts -o name )
 }
 
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 KUBE_HOME="$HOME/.kube"
-
 kaddcontext () {
   now=$(date +%Y-%m-%d_%H:%M)
   merged_tmp=$(mktemp -t k8s_config.${now})
